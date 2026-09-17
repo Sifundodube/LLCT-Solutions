@@ -17,19 +17,25 @@ app.use(cookieParser());
 // The site and the API are served from the same origin now, so CORS
 // isn't strictly needed — but it's harmless to leave configured in
 // case you ever call the API from somewhere else (a separate admin
-// dashboard, etc). Leave ALLOWED_ORIGINS unset to allow all origins.
+// dashboard, etc). The deployed APP_URL is allowed automatically; additional
+// frontend origins can be listed in ALLOWED_ORIGINS.
 const allowedOrigins = (process.env.ALLOWED_ORIGINS || '')
   .split(',')
   .map((o) => o.trim())
   .filter(Boolean);
 const localPreviewOrigins = ['http://localhost:5500', 'http://127.0.0.1:5500'];
+const appOrigin = process.env.APP_URL
+  ? new URL(process.env.APP_URL).origin
+  : null;
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      const origins = allowedOrigins.length
-        ? allowedOrigins
-        : localPreviewOrigins;
+      const origins = [
+        ...localPreviewOrigins,
+        ...(appOrigin ? [appOrigin] : []),
+        ...allowedOrigins,
+      ];
       if (!origin || origins.includes(origin)) return callback(null, true);
       return callback(new Error('Origin is not allowed by CORS.'));
     },
