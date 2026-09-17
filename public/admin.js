@@ -113,6 +113,12 @@ async function showDashboard() {
   await loadDashboard();
 }
 
+function showLogin() {
+  dashboard.hidden = true;
+  loginView.hidden = false;
+  loginForm.reset();
+}
+
 loginForm.addEventListener('submit', async (event) => {
   event.preventDefault();
   loginMessage.hidden = true;
@@ -120,7 +126,9 @@ loginForm.addEventListener('submit', async (event) => {
     await api('/admin/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ password: document.getElementById('adminPassword').value }),
+      body: JSON.stringify({
+        password: document.getElementById('adminPassword').value,
+      }),
     });
     await showDashboard();
   } catch (error) {
@@ -137,22 +145,44 @@ articleForm.addEventListener('submit', async (event) => {
     if (!id && !document.getElementById('articlePdf').files.length) {
       throw new Error('Please choose a PDF file.');
     }
-    await api(id ? `/admin/articles/${id}` : '/admin/articles', { method: id ? 'PATCH' : 'POST', body: formData });
+    await api(id ? `/admin/articles/${id}` : '/admin/articles', {
+      method: id ? 'PATCH' : 'POST',
+      body: formData,
+    });
     resetArticleForm();
-    showMessage(articleMessage, id ? 'Article updated successfully.' : 'Article published successfully.');
+    showMessage(
+      articleMessage,
+      id ? 'Article updated successfully.' : 'Article published successfully.'
+    );
     await loadDashboard();
   } catch (error) {
     showMessage(articleMessage, error.message, true);
   }
 });
 
-document.getElementById('refreshSubscribers').addEventListener('click', loadDashboard);
+document
+  .getElementById('refreshSubscribers')
+  .addEventListener('click', loadDashboard);
 cancelArticleEdit.addEventListener('click', resetArticleForm);
 document.getElementById('logoutButton').addEventListener('click', async () => {
   await api('/admin/logout', { method: 'POST' });
-  dashboard.hidden = true;
-  loginView.hidden = false;
-  loginForm.reset();
+  showLogin();
 });
 
-api('/admin/session').then(showDashboard).catch(() => {});
+api('/admin/session')
+  .then(showDashboard)
+  .catch(() => {});
+
+window.addEventListener('pagehide', () => {
+  fetch(`${apiOrigin}/api/admin/logout`, {
+    method: 'POST',
+    credentials: 'include',
+    keepalive: true,
+  }).catch(() => {});
+});
+
+window.addEventListener('pageshow', (event) => {
+  if (event.persisted) {
+    window.location.reload();
+  }
+});
