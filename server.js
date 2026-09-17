@@ -52,6 +52,9 @@ app.use('/api', articlesRoute);
 
 // Serve the website itself — index.html, style.css, subscribe.js,
 // the downloadable forms, everything in /public.
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 app.use(express.static(path.join(__dirname, 'public')));
 app.get('/admin', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'admin.html'));
