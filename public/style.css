@@ -2331,10 +2331,36 @@ footer {
 }
 
 .footer-bottom {
+    position: relative;
     border-top: 1px solid rgba(255, 255, 255, 0.06);
     padding-top: 24px;
     text-align: center;
     font-size: 0.85rem;
+}
+
+.admin-bubble {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 42px;
+    height: 42px;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: 50%;
+    background: var(--primary-dark);
+    color: var(--accent);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: all var(--transition);
+}
+
+.admin-bubble:hover,
+.admin-bubble:focus-visible {
+    background: var(--accent);
+    color: var(--primary-dark);
+    transform: translateY(-3px);
 }
 
 /* ---------- RESPONSIVE ---------- */
