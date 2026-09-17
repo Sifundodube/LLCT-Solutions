@@ -24,16 +24,16 @@ const allowedOrigins = (process.env.ALLOWED_ORIGINS || '')
   .map((o) => o.trim())
   .filter(Boolean);
 const localPreviewOrigins = ['http://localhost:5500', 'http://127.0.0.1:5500'];
-const appOrigin = process.env.APP_URL
-  ? new URL(process.env.APP_URL).origin
-  : null;
+const appOrigins = [process.env.APP_URL, process.env.RENDER_EXTERNAL_URL]
+  .filter(Boolean)
+  .map((url) => new URL(url).origin);
 
 app.use(
   cors({
     origin: (origin, callback) => {
       const origins = [
         ...localPreviewOrigins,
-        ...(appOrigin ? [appOrigin] : []),
+        ...appOrigins,
         ...allowedOrigins,
       ];
       if (!origin || origins.includes(origin)) return callback(null, true);
