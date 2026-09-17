@@ -1,0 +1,22 @@
+{
+  "name": "llct-subscribe-backend",
+  "version": "1.0.0",
+  "description": "Subscription backend for LLCT Solutions (employer & employee plans via PayFast + Supabase)",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "web": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.4",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "multer": "^2.0.0",
+    "nodemailer": "^10.0.10",
+    "pdf-parse": "^2.4.5"
+  }
+}
