@@ -22,10 +22,18 @@ const allowedOrigins = (process.env.ALLOWED_ORIGINS || '')
   .split(',')
   .map((o) => o.trim())
   .filter(Boolean);
+const localPreviewOrigins = ['http://localhost:5500', 'http://127.0.0.1:5500'];
 
 app.use(
   cors({
-    origin: allowedOrigins.length ? allowedOrigins : true,
+    origin: (origin, callback) => {
+      const origins = allowedOrigins.length
+        ? allowedOrigins
+        : localPreviewOrigins;
+      if (!origin || origins.includes(origin)) return callback(null, true);
+      return callback(new Error('Origin is not allowed by CORS.'));
+    },
+    credentials: true,
   })
 );
 

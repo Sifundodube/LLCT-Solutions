@@ -12,6 +12,11 @@ const articleFormHeading = document.getElementById('articleFormHeading');
 const articleSubmitButton = document.getElementById('articleSubmitButton');
 const cancelArticleEdit = document.getElementById('cancelArticleEdit');
 let loadedArticles = [];
+const apiOrigin =
+  window.location.port === '5500' &&
+  ['localhost', '127.0.0.1'].includes(window.location.hostname)
+    ? 'http://localhost:4000'
+    : '';
 
 function showMessage(element, text, isError = false) {
   element.textContent = text;
@@ -20,7 +25,10 @@ function showMessage(element, text, isError = false) {
 }
 
 async function api(path, options) {
-  const response = await fetch(`/api${path}`, { credentials: 'same-origin', ...options });
+  const response = await fetch(`${apiOrigin}/api${path}`, {
+    credentials: 'include',
+    ...options,
+  });
   const data = await response.json().catch(() => ({}));
   if (!response.ok) throw new Error(data.error || 'Request failed.');
   return data;
